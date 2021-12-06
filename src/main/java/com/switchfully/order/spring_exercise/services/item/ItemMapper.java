@@ -10,8 +10,8 @@ public class ItemMapper {
         return new Item.Builder(
                 createdItemDto.getName(),
                 createdItemDto.getDescription(),
-                createdItemDto.getPrice(),
-                createdItemDto.getStock())
+                createdItemDto.getPrice())
+                .withStock(createdItemDto.getStock())
                 .build();
     }
 }

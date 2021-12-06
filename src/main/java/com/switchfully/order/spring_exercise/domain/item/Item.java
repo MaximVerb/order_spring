@@ -12,7 +12,7 @@ public class Item {
     private final String name;
     private final String description;
     private final BigDecimal price;
-    private final Long stock;
+    private Long stock;
 
     private Item(Builder builder) {
         this.id = builder.id;
@@ -27,19 +27,28 @@ public class Item {
         private final String name;
         private final String description;
         private final BigDecimal price;
-        private final Long stock;
+        private Long stock;
 
-        public Builder(String name, String description, BigDecimal price, Long stock) {
+        public Builder(String name, String description, BigDecimal price) {
             this.id = UUID.randomUUID().toString();
             this.name = name;
             this.description = description;
             this.price = price;
+        }
+
+        public Builder withStock(Long stock) {
             this.stock = stock;
+            return this;
         }
 
         public Item build() {
             return new Item(this);
         }
+    }
+
+    public Item withStock(Long stock) {
+        this.stock = stock;
+        return this;
     }
 
     @Override
