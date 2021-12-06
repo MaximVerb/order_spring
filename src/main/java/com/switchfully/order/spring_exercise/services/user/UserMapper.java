@@ -1,7 +1,6 @@
-package com.switchfully.order.spring_exercise.services.mappers.user;
+package com.switchfully.order.spring_exercise.services.user;
 
-import com.switchfully.order.spring_exercise.domain.User;
-import com.switchfully.order.spring_exercise.services.dtos.user.CreateUserDto;
+import com.switchfully.order.spring_exercise.domain.user.User;
 import org.springframework.stereotype.Component;
 
 @Component

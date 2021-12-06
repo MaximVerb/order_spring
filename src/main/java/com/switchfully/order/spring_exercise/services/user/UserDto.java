@@ -1,6 +1,6 @@
-package com.switchfully.order.spring_exercise.services.dtos.user;
+package com.switchfully.order.spring_exercise.services.user;
 
-import com.switchfully.order.spring_exercise.domain.User;
+import com.switchfully.order.spring_exercise.domain.user.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

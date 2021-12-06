@@ -1,10 +1,7 @@
 package com.switchfully.order.spring_exercise.services.user;
 
-import com.switchfully.order.spring_exercise.domain.User;
+import com.switchfully.order.spring_exercise.domain.user.User;
 import com.switchfully.order.spring_exercise.repositories.user.UserRepositoryImpl;
-import com.switchfully.order.spring_exercise.services.dtos.user.CreateUserDto;
-import com.switchfully.order.spring_exercise.services.dtos.user.UserDto;
-import com.switchfully.order.spring_exercise.services.mappers.user.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

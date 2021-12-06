@@ -1,6 +1,6 @@
 package com.switchfully.order.spring_exercise.repositories.user;
 
-import com.switchfully.order.spring_exercise.domain.User;
+import com.switchfully.order.spring_exercise.domain.user.User;
 
 import java.util.List;
 

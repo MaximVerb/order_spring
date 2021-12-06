@@ -1,4 +1,4 @@
-package com.switchfully.order.spring_exercise.domain;
+package com.switchfully.order.spring_exercise.domain.user;
 
 import lombok.Builder;
 import lombok.Getter;
