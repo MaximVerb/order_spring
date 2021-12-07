@@ -14,6 +14,8 @@ public class User {
     private final String phoneNumber;
     private final Address address;
 
+    private UserRole userRole;
+
     private User(Builder builder) {
         this.id = builder.id ;
         this.firstName =  builder.firstName ;
@@ -21,6 +23,7 @@ public class User {
         this.emailAddress =  builder.emailAddress;
         this.phoneNumber =  builder.phoneNumber;
         this.address =  builder.address;
+        this.userRole = builder.userRole;
     }
 
     public static class Builder {
@@ -31,6 +34,8 @@ public class User {
         private final String phoneNumber;
         private final Address address;
 
+        private UserRole userRole;
+
         public Builder(String firstName, String lastName, String emailAddress, String phoneNumber, Address address) {
             this.id = UUID.randomUUID().toString();
             this.firstName = firstName;
@@ -38,6 +43,11 @@ public class User {
             this.emailAddress = emailAddress;
             this.phoneNumber = phoneNumber;
             this.address = address;
+        }
+
+        public Builder withRole(UserRole role) {
+            this.userRole = role;
+            return this;
         }
 
         public User build() {

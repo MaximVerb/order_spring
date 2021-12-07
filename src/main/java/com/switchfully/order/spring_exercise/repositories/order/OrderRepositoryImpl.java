@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
@@ -23,5 +24,12 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public void save(Order order) {
         ordersById.put(order.getId(), order);
+    }
+
+    @Override
+    public List<Order> getOrdersByUserId(String id) {
+        return ordersById.values().stream()
+                .filter(order -> order.getUser().getId().equals(id))
+                .collect(Collectors.toList());
     }
 }

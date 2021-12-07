@@ -14,4 +14,13 @@ public class ItemMapper {
                 .withStock(createdItemDto.getStock())
                 .build();
     }
+
+    public Item convertUpdatedDtoToItem(UpdatedItemDto updatedItemDto) {
+        return new Item.Builder(
+                updatedItemDto.getName(),
+                updatedItemDto.getDescription(),
+                updatedItemDto.getPrice())
+                .withStock(updatedItemDto.getStock())
+                .build();
+    }
 }

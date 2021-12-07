@@ -7,4 +7,5 @@ import java.util.List;
 public interface OrderRepository {
     List<Order> getAllOrders();
     void save(Order order);
+    List<Order> getOrdersByUserId(String id);
 }

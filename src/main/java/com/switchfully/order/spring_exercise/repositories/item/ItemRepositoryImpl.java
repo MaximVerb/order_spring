@@ -1,8 +1,7 @@
 package com.switchfully.order.spring_exercise.repositories.item;
 
-import com.switchfully.order.spring_exercise.custom.ItemCouldNotBeFoundExc;
+import com.switchfully.order.spring_exercise.exceptions.EntityCouldNotBeFoundExc;
 import com.switchfully.order.spring_exercise.domain.item.Item;
-import com.switchfully.order.spring_exercise.services.item.ItemMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -28,11 +27,21 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public Item getItem(Item item) {
+    public Item getItemByNameAndDescription(String name, String description) {
         return itemById.values()
                 .stream()
-                .filter(itemInDB -> itemInDB.equals(item))
+                .filter(itemInDB -> itemInDB.getName().equals(name) && itemInDB.getDescription().equals(description))
                 .findFirst()
-                .orElseThrow(() ->  {throw new ItemCouldNotBeFoundExc(); });
+                .orElseThrow(() ->  {throw new EntityCouldNotBeFoundExc(); });
+    }
+
+    @Override
+    public Item getItemById(String id) {
+        return itemById.get(id);
+    }
+
+    @Override
+    public void updateItemById(String id, Item item) {
+        itemById.computeIfPresent(id, (key, value) -> value = item);
     }
 }

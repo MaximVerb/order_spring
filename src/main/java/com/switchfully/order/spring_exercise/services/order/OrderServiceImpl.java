@@ -6,18 +6,20 @@ import com.switchfully.order.spring_exercise.domain.order.OrderedItem;
 import com.switchfully.order.spring_exercise.domain.user.User;
 import com.switchfully.order.spring_exercise.repositories.item.ItemRepository;
 import com.switchfully.order.spring_exercise.repositories.order.OrderRepository;
-import com.switchfully.order.spring_exercise.repositories.order.OrderRepositoryImpl;
 import com.switchfully.order.spring_exercise.repositories.order.OrderedItemRepository;
 import com.switchfully.order.spring_exercise.repositories.user.UserRepository;
-import com.switchfully.order.spring_exercise.services.user.UserDto;
 import com.switchfully.order.spring_exercise.services.user.UserMapper;
 import com.switchfully.order.spring_exercise.services.validators.NumericValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -45,19 +47,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<UserDto, List<OrderDto>> getAllOrdersByUser() {
-//        return orderRepository.getAllOrders()
-//                .stream()
-//                .collect(Collectors.groupingBy(Order::getUser))
-//                .entrySet()
-//                .stream()
-//                .map((key, value) -> { new UserDto(key);
-//                                        new OrderDto(value;
-        return null;
+    public List<OrderDto> getAllOrders() {
+        List<Order> orderList = orderRepository.getAllOrders();
+        orderList.stream()
+                .flatMap(order -> order.getOrderedItems().stream())
+                .forEach(orderedItem -> {
+                    orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));
+                });
+        return orderMapper.convertOrderToOrderDto(orderList);
     }
 
     @Override
-    public List<CreatedOrderedItem> createOrderedItemList(List<CreatedOrderedItem> createdOrderItemList) {
+    public List<CreatedOrderedItemDto> createOrderedItemList(List<CreatedOrderedItemDto> createdOrderItemList) {
         if (isCreatedOrderItemGivenAmountValid(createdOrderItemList)) {
             createdOrderItemList.forEach(this::setCorrectShippingDate);
             return createdOrderItemList;
@@ -67,36 +68,73 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto createAnOrder(CreatedOrderDto createdOrderDto) {
+    public OrderDto createOrder(CreatedOrderDto createdOrderDto) {
         List<OrderedItem> orderedItemList = orderMapper.convertDtosToOrderedItems(createOrderedItemList(createdOrderDto.getCreatedOrderItemList()));
         User user = userRepository.getUserById(createdOrderDto.getUserId());
-        Order order = orderMapper.convertDtoToOrder(createdOrderDto, orderedItemList, user);
-        orderedItemRepository.save(orderedItemList, order);
+        Order order = orderMapper.convertOrderDtoToOrder(orderedItemList, user);
+        order.withTotalCost(totalCostAllOrders(Stream.of(order)));
+        orderedItemRepository.save(orderedItemList, order.getId());
         orderRepository.save(order);
         return new OrderDto(order);
     }
 
-
-    private void setCorrectShippingDate(CreatedOrderedItem createdOrderedItem) {
-        Item itemInDB = itemRepository.getItem(createdOrderedItem.getItem());
-        if (itemInDB.getStock() > 0) {
-            createdOrderedItem.withShippingDate(LocalDateTime.now().plusDays(PLUS_ONE_DAY));
-            reduceStockItem(itemInDB);
-        } else {
-            createdOrderedItem.withShippingDate(LocalDateTime.now().plusDays(PLUS_ONE_WEEK));
-            reduceStockItem(itemInDB);
-        }
+    @Override
+    public OrderReportDto getOrderReport(String id) {
+        List<Order> ordersByUser = orderRepository.getOrdersByUserId(id);
+        ordersByUser.stream()
+                .flatMap(order -> order.getOrderedItems().stream())
+                .forEach(orderedItem -> {
+                    orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));
+                });
+        return  orderMapper.convertOrderToOrderReportDto(id, ordersByUser, totalCostAllOrders(ordersByUser.stream()));
     }
 
-    private boolean isCreatedOrderItemGivenAmountValid(List<CreatedOrderedItem> createdOrderItemList) {
+    private BigDecimal totalCostAllOrders(Stream<Order> orders) {
+        return orders.map(Order::getOrderedItems)
+                .map(this::totalCostOrder)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
+    private BigDecimal totalCostOrder(List<OrderedItem> orderedItemList) {
+        Function<OrderedItem, BigDecimal> orderedItemToItsPrice =
+                orderedItem -> itemRepository.getItemByNameAndDescription(orderedItem.getName(), orderedItem.getDescription()).getPrice();
+
+        return orderedItemList.stream()
+                .map(orderedItem -> orderedItemToItsPrice.apply(orderedItem).multiply(BigDecimal.valueOf(orderedItem.getAmountOrdered())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
+    private void setCorrectShippingDate(CreatedOrderedItemDto createdOrderedItem) {
+        Item itemInDB = itemRepository.getItemByNameAndDescription(createdOrderedItem.getName(), createdOrderedItem.getDescription());
+        if (isThereEnoughStock(createdOrderedItem, itemInDB)) {
+            createdOrderedItem.setShippingDate(LocalDateTime.now().plusDays(PLUS_ONE_DAY));
+        } else {
+            createdOrderedItem.setShippingDate(LocalDateTime.now().plusDays(PLUS_ONE_WEEK));
+        }
+        reduceStockItem(itemInDB, createdOrderedItem);
+    }
+
+    private BigDecimal setTotalCostOrderedItem(OrderedItem orderedItem) {
+        Item itemInDB = itemRepository.getItemByNameAndDescription(orderedItem.getName(), orderedItem.getDescription());
+        return itemInDB.getPrice().multiply(BigDecimal.valueOf(orderedItem.getAmountOrdered()));
+    }
+
+    private boolean isThereEnoughStock(CreatedOrderedItemDto createdOrderedItem, Item itemInDB) {
+        return itemInDB.getStock() > 0 && (itemInDB.getStock() - createdOrderedItem.getAmountOrdered()) > 0;
+    }
+
+    private boolean isCreatedOrderItemGivenAmountValid(List<CreatedOrderedItemDto> createdOrderItemList) {
         return createdOrderItemList.stream()
                 .allMatch(createdOrderedItem ->
-                        NumericValidator.isNotZero(createdOrderedItem.getAmountOrderd()));
+                        NumericValidator.isNotZero(createdOrderedItem.getAmountOrdered()));
     }
 
-    private void reduceStockItem(Item item) {
-        item.withStock(item.getStock() - 1);
+    /**
+     * Stock can go negative due to counter for resupply
+     */
+    private void reduceStockItem(Item item, CreatedOrderedItemDto createdOrderedItem) {
+        item.withStock(item.getStock() - createdOrderedItem.getAmountOrdered());
     }
-
-
 }

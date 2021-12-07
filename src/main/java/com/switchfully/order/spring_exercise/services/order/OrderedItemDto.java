@@ -1,20 +1,24 @@
 package com.switchfully.order.spring_exercise.services.order;
 
-import com.switchfully.order.spring_exercise.domain.item.Item;
 import com.switchfully.order.spring_exercise.domain.order.OrderedItem;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 public class OrderedItemDto {
-    private final long amountOrderd;
-    private final Item item;
-    private final LocalDateTime shippingDate;
+    private final long amountOrdered;
+    private final String description;
+    private final String name;
+    private final String shippingDate;
+    private final BigDecimal totalCostOrderedItems;
 
     public OrderedItemDto(OrderedItem orderedItem) {
-        this.amountOrderd = orderedItem.getAmountOrderd();
-        this.item = orderedItem.getItem();
-        this.shippingDate = orderedItem.getShippingDate();
+        this.amountOrdered = orderedItem.getAmountOrdered();
+        this.name = orderedItem.getName();
+        this.description = orderedItem.getDescription();
+        this.shippingDate = DateTimeFormatter.ISO_DATE.format(orderedItem.getShippingDate());
+        this.totalCostOrderedItems = orderedItem.getTotalCostOrderedItems();
     }
 }

@@ -1,10 +1,12 @@
 package com.switchfully.order.spring_exercise.controllers;
 
+import com.switchfully.order.spring_exercise.services.order.OrderReportDto;
 import com.switchfully.order.spring_exercise.services.user.CreateUserDto;
 import com.switchfully.order.spring_exercise.services.user.UserDto;
 import com.switchfully.order.spring_exercise.services.user.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,15 +28,18 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDto> getAllCustomers() {
+        return userService.getAllCustomers();
     }
 
-    //TODO as an unregistered user I want to add myself as a user
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, path = "/register-user")
+    @GetMapping(path = "/{id}")
+    public UserDto getCustomerById(@PathVariable("id") String id) { return userService.getCustomerById(id); }
+
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody CreateUserDto createUserDto) {
         return userService.createUser(createUserDto);
     }
+
 
 }

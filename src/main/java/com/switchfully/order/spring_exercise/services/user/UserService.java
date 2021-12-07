@@ -5,5 +5,7 @@ import java.util.List;
 public interface UserService {
     UserDto createUser(CreateUserDto createUserDto);
 
-    List<UserDto> getAllUsers();
+    List<UserDto> getAllCustomers();
+
+    UserDto getCustomerById(String id);
 }

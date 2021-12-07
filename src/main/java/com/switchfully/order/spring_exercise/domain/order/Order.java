@@ -46,6 +46,11 @@ public class Order {
         }
     }
 
+    public Order withTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

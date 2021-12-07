@@ -27,6 +27,13 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public ItemDto updateItemById(String id, UpdatedItemDto updatedItemDto) {
+        Item item = itemRepository.getItemById(id);
+        itemRepository.updateItemById(id, item);
+        return new ItemDto(item);
+    }
+
+    @Override
     public List<ItemDto> getAllItems() {
         return itemRepository.getAllItems()
                 .stream()

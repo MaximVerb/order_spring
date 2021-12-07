@@ -1,6 +1,7 @@
 package com.switchfully.order.spring_exercise.services.user;
 
 import com.switchfully.order.spring_exercise.domain.user.User;
+import com.switchfully.order.spring_exercise.domain.user.UserRole;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +14,7 @@ public class UserMapper {
                 createUserDto.getEmailAddress(),
                 createUserDto.getPhoneNumber(),
                 createUserDto.getAddress())
+                .withRole(UserRole.CUSTOMER)
                 .build();
     }
 }

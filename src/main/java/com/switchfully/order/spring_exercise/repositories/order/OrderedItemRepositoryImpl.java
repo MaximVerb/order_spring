@@ -16,7 +16,7 @@ public class OrderedItemRepositoryImpl implements OrderedItemRepository {
     }
 
     @Override
-    public void save(List<OrderedItem> orderedItems, Order order) {
-        orderedItemByOrderId.put(order.getId(), orderedItems);
+    public void save(List<OrderedItem> orderedItems, String orderId) {
+        orderedItemByOrderId.put(orderId, orderedItems);
     }
 }

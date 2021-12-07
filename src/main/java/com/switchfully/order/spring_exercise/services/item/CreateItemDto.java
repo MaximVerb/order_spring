@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Getter
 @EqualsAndHashCode
@@ -21,10 +22,10 @@ public class CreateItemDto {
     }
 
     private CreateItemDto(String name, String description, BigDecimal price, Long stock) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.stock = stock;
+        this.name =  Objects.requireNonNull(name);
+        this.description =  Objects.requireNonNull(description);
+        this.price =  Objects.requireNonNull(price);
+        this.stock =  Objects.requireNonNull(stock);
     }
 
     public static class Builder {
