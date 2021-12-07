@@ -7,13 +7,13 @@ import lombok.Getter;
 @EqualsAndHashCode
 @Getter
 public class UserDto {
+    private final String id; //testing purposes only FIXME
     private final String firstName;
     private final String lastName;
-    private final String id; //testing purposes only FIXME
 
     public UserDto(User user) {
+        this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-        this.id = user.getId();
     }
 }

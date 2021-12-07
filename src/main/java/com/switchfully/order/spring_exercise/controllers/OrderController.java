@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,9 +41,16 @@ public class OrderController {
         return orderService.getOrderReport(id);
     }
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, path = "/create-order")
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto createOrder(@RequestBody CreatedOrderDto createdOrderDto) {
         return orderService.createOrder(createdOrderDto);
+    }
+
+    //create recurring order
+    @PostMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto createRecurringOrder(@PathVariable("id") String orderId) {
+        return orderService.createRecurringOrder(orderId);
     }
 }

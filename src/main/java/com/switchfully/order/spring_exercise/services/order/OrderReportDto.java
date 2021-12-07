@@ -11,9 +11,12 @@ import java.util.List;
 public class OrderReportDto {
     @JsonProperty("user")
     private final String userId;
+
     @JsonIgnoreProperties({"description", "shippingDate"})
-    @JsonProperty("ordered items")
+    @JsonProperty("ordered_items")
     private final List<OrderedItemDto> orderedItemDtoList;
+
+    @JsonProperty("total_price_order")
     private final BigDecimal totalPriceCompleteOrder;
 
     private OrderReportDto(String userId, List<OrderedItemDto> orderedItemDtoList, BigDecimal totalPriceCompleteOrder) {

@@ -4,19 +4,17 @@ import com.switchfully.order.spring_exercise.domain.item.Item;
 import com.switchfully.order.spring_exercise.domain.order.Order;
 import com.switchfully.order.spring_exercise.domain.order.OrderedItem;
 import com.switchfully.order.spring_exercise.domain.user.User;
+import com.switchfully.order.spring_exercise.exceptions.EntityCouldNotBeFoundExc;
 import com.switchfully.order.spring_exercise.repositories.item.ItemRepository;
 import com.switchfully.order.spring_exercise.repositories.order.OrderRepository;
 import com.switchfully.order.spring_exercise.repositories.order.OrderedItemRepository;
 import com.switchfully.order.spring_exercise.repositories.user.UserRepository;
-import com.switchfully.order.spring_exercise.services.user.UserMapper;
 import com.switchfully.order.spring_exercise.services.validators.NumericValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -32,18 +30,16 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
 
     private final OrderMapper orderMapper;
-    private final UserMapper userMapper;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, OrderedItemRepository orderedItemRepository,
                             ItemRepository itemRepository, UserRepository userRepository,
-                            OrderMapper orderMapper, UserMapper userMapper) {
+                            OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.orderedItemRepository = orderedItemRepository;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.orderMapper = orderMapper;
-        this.userMapper = userMapper;
     }
 
     @Override
@@ -51,9 +47,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orderList = orderRepository.getAllOrders();
         orderList.stream()
                 .flatMap(order -> order.getOrderedItems().stream())
-                .forEach(orderedItem -> {
-                    orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));
-                });
+                .forEach(orderedItem -> {orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));});
         return orderMapper.convertOrderToOrderDto(orderList);
     }
 
@@ -78,15 +72,31 @@ public class OrderServiceImpl implements OrderService {
         return new OrderDto(order);
     }
 
+    //TODO hier moet nog een UserId check op gebeuren
+    @Override
+    public OrderDto createRecurringOrder(String orderId) {
+        Order order = orderRepository.getOrderByOrderId(orderId).orElseThrow(() -> {throw new EntityCouldNotBeFoundExc();});
+
+        Order newOrder = new Order.Builder(order.getOrderedItems(), order.getUser())
+                .withTotalCost(totalCostAllOrders(Stream.of(order)))
+                .build();
+
+        totalPriceItemByItem(newOrder.getOrderedItems().stream());
+        orderRepository.save(newOrder);
+        return new OrderDto(newOrder);
+    }
+
     @Override
     public OrderReportDto getOrderReport(String id) {
         List<Order> ordersByUser = orderRepository.getOrdersByUserId(id);
-        ordersByUser.stream()
-                .flatMap(order -> order.getOrderedItems().stream())
-                .forEach(orderedItem -> {
-                    orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));
-                });
-        return  orderMapper.convertOrderToOrderReportDto(id, ordersByUser, totalCostAllOrders(ordersByUser.stream()));
+        ordersByUser.forEach(order -> totalPriceItemByItem(order.getOrderedItems().stream()));
+        return orderMapper.convertOrderToOrderReportDto(id, ordersByUser, totalCostAllOrders(ordersByUser.stream()));
+    }
+
+    private void totalPriceItemByItem(Stream<OrderedItem> orderedItemStream) {
+        orderedItemStream.forEach(orderedItem -> {
+            orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));
+        });
     }
 
     private BigDecimal totalCostAllOrders(Stream<Order> orders) {
@@ -132,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Stock can go negative due to counter for resupply
+     * Stock can go beneath 0 for resupply
      */
     private void reduceStockItem(Item item, CreatedOrderedItemDto createdOrderedItem) {
         item.withStock(item.getStock() - createdOrderedItem.getAmountOrdered());
