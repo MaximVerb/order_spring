@@ -1,6 +1,5 @@
-package com.switchfully.order.spring_exercise.pointcutters.repositories_aspect;
+package com.switchfully.order.spring_exercise.logging.repositories_aspect;
 
-import com.switchfully.order.spring_exercise.pointcutters.controller_aspect.ControllerAspect;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,12 +20,12 @@ public class RepositoriesAspect {
     @Before("allRepos()")
     public void logInfoBeforeAllRepositoryMethods(JoinPoint joinPoint) {
         String method = joinPoint.getSignature().toShortString();
-        logger.info("Calling method: " + method);
+        logger.debug("Calling method: " + method);
     }
 
     @After("allRepos()")
     public void logInfoAfterAllRepositoryMethods(JoinPoint joinPoint) {
         String method = joinPoint.getSignature().toShortString();
-        logger.info("Finished method: " + method);
+        logger.debug("Finished method: " + method);
     }
 }

@@ -1,4 +1,4 @@
-package com.switchfully.order.spring_exercise.pointcutters.controller_aspect;
+package com.switchfully.order.spring_exercise.logging.controller_aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -20,12 +20,12 @@ public class ControllerAspect {
     @Before("allControllers()")
     public void logInfoBeforeAllControllerMethods(JoinPoint joinPoint) {
         String method = joinPoint.getSignature().toShortString();
-        logger.info("Calling method: " + method);
+        logger.debug("Calling method: " + method);
     }
 
     @After("allControllers()")
     public void logInfoAfterAllControllerMethods(JoinPoint joinPoint) {
         String method = joinPoint.getSignature().toShortString();
-        logger.info("Finished method: " + method);
+        logger.debug("Finished method: " + method);
     }
 }

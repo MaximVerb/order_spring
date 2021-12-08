@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -30,5 +31,23 @@ public class UserRepositoryImpl implements UserRepository{
     @Override
     public User getUserById(String id) {
         return usersById.get(id);
+    }
+
+    @Override
+    public Optional<User> findUserByUsername(String username) {
+        return usersById.values().stream()
+                .filter(user -> user.getUsername().equals(username))
+                .distinct()
+                .findAny();
+    }
+
+    @Override
+    public void delete(String id) {
+        usersById.remove(id);
+    }
+
+    @Override
+    public void update(String id, User user) {
+        usersById.computeIfPresent(id, (ke,value) -> user);
     }
 }

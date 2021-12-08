@@ -1,6 +1,5 @@
-package com.switchfully.order.spring_exercise.pointcutters.services_aspect;
+package com.switchfully.order.spring_exercise.logging.services_aspect;
 
-import com.switchfully.order.spring_exercise.pointcutters.repositories_aspect.RepositoriesAspect;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,12 +20,12 @@ public class ServicesAspect {
     @Before("allServices()")
     public void logInfoBeforeAllServiceMethods(JoinPoint joinPoint) {
         String method = joinPoint.getSignature().toShortString();
-        logger.info("Calling method: " + method);
+        logger.debug("Calling method: " + method);
     }
 
     @After("allServices()")
     public void logInfoAfterAllServiceMethods(JoinPoint joinPoint) {
         String method = joinPoint.getSignature().toShortString();
-        logger.info("Finished method: " + method);
+        logger.debug("Finished method: " + method);
     }
 }
