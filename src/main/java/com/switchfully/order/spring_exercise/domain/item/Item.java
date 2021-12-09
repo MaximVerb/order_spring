@@ -46,7 +46,7 @@ public class Item {
         }
     }
 
-    public Item withStock(Long stock) {
+    public Item setStock(Long stock) {
         this.stock = stock;
         return this;
     }

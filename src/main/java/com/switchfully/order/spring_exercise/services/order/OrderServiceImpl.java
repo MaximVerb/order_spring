@@ -145,6 +145,6 @@ public class OrderServiceImpl implements OrderService {
      * Stock can go beneath 0 for resupply
      */
     private void reduceStockItem(Item item, CreatedOrderedItemDto createdOrderedItem) {
-        item.withStock(item.getStock() - createdOrderedItem.getAmountOrdered());
+        item.setStock(item.getStock() - createdOrderedItem.getAmountOrdered());
     }
 }

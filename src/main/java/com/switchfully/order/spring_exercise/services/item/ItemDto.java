@@ -1,6 +1,5 @@
 package com.switchfully.order.spring_exercise.services.item;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.switchfully.order.spring_exercise.domain.item.Item;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
