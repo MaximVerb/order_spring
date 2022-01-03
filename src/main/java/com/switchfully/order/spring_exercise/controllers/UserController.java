@@ -1,11 +1,9 @@
 package com.switchfully.order.spring_exercise.controllers;
 
-import com.switchfully.order.spring_exercise.services.order.OrderReportDto;
 import com.switchfully.order.spring_exercise.services.user.CreateUserDto;
 import com.switchfully.order.spring_exercise.services.user.UserDto;
 import com.switchfully.order.spring_exercise.services.user.UserServiceImpl;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

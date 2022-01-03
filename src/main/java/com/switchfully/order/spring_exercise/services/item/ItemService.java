@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface ItemService {
     ItemDto createItem(CreateItemDto createdItemDto);
-
-    ItemDto updateItemById(String id, UpdatedItemDto updatedItemDto);
-
+    ItemDto updateItemById(Long id, UpdatedItemDto updatedItemDto);
     List<ItemDto> getAllItems();
 }

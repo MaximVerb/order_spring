@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @JsonPropertyOrder({"orderId", "user", "orderedItemDtoList", "totalCost"})
 public class OrderDto {
     @JsonProperty("order_identifier")
-    private final String orderId;
+    private final Long orderId;
 
     @JsonProperty("ordered_items")
     private final List<OrderedItemDto> orderedItemDtoList;

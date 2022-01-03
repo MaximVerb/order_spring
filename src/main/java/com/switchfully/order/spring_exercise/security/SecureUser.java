@@ -22,18 +22,18 @@ public class SecureUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        setAuthorities(user.getUserRole().name());
+        setAuthorities(user.getSecurityInformation().getUserRole().name());
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.getSecurityInformation().getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getSecurityInformation().getUsername();
     }
 
     @Override

@@ -1,55 +1,49 @@
 package com.switchfully.order.spring_exercise.domain.order;
 
 import com.switchfully.order.spring_exercise.domain.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
+@Entity
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "orders")
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id", nullable = false)
+    private Long id;
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "ordered_items_fk", nullable = false)
+    private List<OrderedItem> orderedItems = new ArrayList<>();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_fk", nullable = false)
+    private User user;
+
+    @Column(name = "total_cost", nullable = false)
     private BigDecimal totalCost;
-
-    private final String id;
-    private final List<OrderedItem> orderedItems;
-    private final User user;
-
-    private Order(Builder builder) {
-        this.id = builder.id;
-        this.orderedItems = builder.orderedItem;
-        this.totalCost = builder.totalCost;
-        this.user = builder.user;
-    }
-
-    public static class Builder {
-        private final String id;
-        private final List<OrderedItem> orderedItem;
-        private final User user;
-
-        private BigDecimal totalCost;
-
-        public Builder(List<OrderedItem> orderedItem, User user) {
-            this.id = UUID.randomUUID().toString();
-            this.orderedItem = orderedItem;
-            this.user = user;
-        }
-
-        public Builder withTotalCost(BigDecimal totalCost) {
-            this.totalCost = totalCost;
-            return this;
-        }
-
-        public Order build() {
-            return new Order(this);
-        }
-    }
-
-    public Order withTotalCost(BigDecimal totalCost) {
-        this.totalCost = totalCost;
-        return this;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -62,5 +56,13 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void setOrderedItems(List<OrderedItem> orderedItems) {
+        this.orderedItems = orderedItems;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 }

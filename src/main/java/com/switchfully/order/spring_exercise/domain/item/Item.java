@@ -1,55 +1,41 @@
 package com.switchfully.order.spring_exercise.domain.item;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.UUID;
 
+@Entity
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name = "Item")
 public class Item {
-    private final String id;
-    private final String name;
-    private final String description;
-    private final BigDecimal price;
-    private Long stock;
 
-    private Item(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.description = builder.description;
-        this.price = builder.price;
-        this.stock = builder.stock;
-    }
+    @Id
+    @Column(name = "item_id", nullable = false)
+    private Long id;
 
-    public static class Builder {
-        private final String id;
-        private final String name;
-        private final String description;
-        private final BigDecimal price;
-        private Long stock;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-        public Builder(String name, String description, BigDecimal price) {
-            this.id = UUID.randomUUID().toString();
-            this.name = name;
-            this.description = description;
-            this.price = price;
-        }
+    @Column(name = "description")
+    private String description;
 
-        public Builder withStock(Long stock) {
-            this.stock = stock;
-            return this;
-        }
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
-        public Item build() {
-            return new Item(this);
-        }
-    }
-
-    public Item setStock(Long stock) {
-        this.stock = stock;
-        return this;
-    }
+    @Embedded
+    private Warehouse warehouse;
 
     @Override
     public boolean equals(Object o) {

@@ -1,7 +1,7 @@
 package com.switchfully.order.spring_exercise.security;
 
 import com.switchfully.order.spring_exercise.domain.user.User;
-import com.switchfully.order.spring_exercise.repositories.user.UserRepository;
+import com.switchfully.order.spring_exercise.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,21 +28,21 @@ public class SecurityService implements UserDetailsService {
     }
 
     public void addUser(User user) {
-        if(userDoesNotExist(user.getUsername())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(userDoesNotExist(user.getSecurityInformation().getUsername())) {
+            user.getSecurityInformation().setPassword(passwordEncoder.encode(user.getSecurityInformation().getPassword()));
             userRepository.save(user);
         }
     }
 
     public void deleteUser(User user) {
-        if(userDoesExist(user.getUsername())) {
-            userRepository.delete(user.getId());
+        if(userDoesExist(user.getSecurityInformation().getUsername())) {
+            userRepository.delete(user);
         }
     }
 
     public void updateUser(User user) {
-        if(userDoesExist(user.getUsername())) {
-            userRepository.update(user.getId(), user);
+        if(userDoesExist(user.getSecurityInformation().getUsername())) {
+            userRepository.save(user);
         }
     }
 

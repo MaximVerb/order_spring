@@ -3,7 +3,7 @@ package com.switchfully.order.spring_exercise.services.user;
 import com.switchfully.order.spring_exercise.domain.user.User;
 import com.switchfully.order.spring_exercise.domain.user.UserRole;
 import com.switchfully.order.spring_exercise.exceptions.EntityCouldNotBeFoundExc;
-import com.switchfully.order.spring_exercise.repositories.user.UserRepository;
+import com.switchfully.order.spring_exercise.repositories.UserRepository;
 import com.switchfully.order.spring_exercise.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,18 +32,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllCustomers() {
-        return userRepository.getAllUsers()
+        return userRepository.findAll()
                 .stream()
-                .filter(user -> user.getUserRole().equals(UserRole.CUSTOMER))
+                .filter(user -> user.getSecurityInformation().getUserRole().equals(UserRole.CUSTOMER))
                 .map(UserDto::new)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto getCustomerById(String id) {
-        return userRepository.getAllUsers()
+        return userRepository.findAll()
                 .stream()
-                .filter(user -> user.getUserRole().equals(UserRole.CUSTOMER))
+                .filter(user -> user.getSecurityInformation().getUserRole().equals(UserRole.CUSTOMER))
                 .filter(user -> user.getId().equals(id))
                 .map(UserDto::new)
                 .findFirst()

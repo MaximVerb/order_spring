@@ -7,20 +7,20 @@ import org.springframework.stereotype.Component;
 public class ItemMapper {
 
     public Item convertDtoToItem(CreateItemDto createdItemDto) {
-        return new Item.Builder(
-                createdItemDto.getName(),
-                createdItemDto.getDescription(),
-                createdItemDto.getPrice())
-                .withStock(createdItemDto.getStock())
+        return Item.builder()
+                .name(createdItemDto.getName())
+                .description(createdItemDto.getDescription())
+                .price(createdItemDto.getPrice())
+                .warehouse(createdItemDto.getWarehouse())
                 .build();
     }
 
     public Item convertUpdatedDtoToItem(UpdatedItemDto updatedItemDto) {
-        return new Item.Builder(
-                updatedItemDto.getName(),
-                updatedItemDto.getDescription(),
-                updatedItemDto.getPrice())
-                .withStock(updatedItemDto.getStock())
+        return Item.builder()
+                .name(updatedItemDto.getName())
+                .description(updatedItemDto.getDescription())
+                .price(updatedItemDto.getPrice())
+                .warehouse(updatedItemDto.getWarehouse())
                 .build();
     }
 }

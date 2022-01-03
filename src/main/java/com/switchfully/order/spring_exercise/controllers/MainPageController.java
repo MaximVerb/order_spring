@@ -15,10 +15,4 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/", produces = APPLICATION_JSON_VALUE)
 public class MainPageController {
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public String getHelloWorld(CsrfToken csrfToken , HttpServletResponse response) {
-        response.addHeader("X-CSRF-HEADER", csrfToken.getToken());
-        return "Hello World";
-    }
 }

@@ -1,14 +1,19 @@
 package com.switchfully.order.spring_exercise.services.item;
 
 import com.switchfully.order.spring_exercise.domain.item.Item;
-import com.switchfully.order.spring_exercise.repositories.item.ItemRepository;
+import com.switchfully.order.spring_exercise.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.util.UUID.fromString;
+
 @Service
+@Transactional
 public class ItemServiceImpl implements ItemService{
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
@@ -27,15 +32,15 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public ItemDto updateItemById(String id, UpdatedItemDto updatedItemDto) {
-        Item item = itemRepository.getItemById(id);
-        itemRepository.updateItemById(id, item);
+    public ItemDto updateItemById(Long id, UpdatedItemDto updatedItemDto) {
+        Item item = itemRepository.getById(id);
+        itemRepository.save(item);
         return new ItemDto(item);
     }
 
     @Override
     public List<ItemDto> getAllItems() {
-        return itemRepository.getAllItems()
+        return itemRepository.findAll()
                 .stream()
                 .map(ItemDto::new)
                 .collect(Collectors.toList());

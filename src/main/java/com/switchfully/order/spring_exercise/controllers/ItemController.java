@@ -49,6 +49,6 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public ItemDto updateItemById(@PathVariable ("id") String id,
                                   @RequestBody UpdatedItemDto updatedItemDto)
-    {return itemService.updateItemById(id, updatedItemDto); }
+    {return itemService.updateItemById(Long.valueOf(id), updatedItemDto); }
 
 }

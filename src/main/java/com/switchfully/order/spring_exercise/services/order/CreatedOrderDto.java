@@ -4,13 +4,16 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+
+import static java.util.UUID.fromString;
 
 @Getter
 public class CreatedOrderDto {
     private final List<CreatedOrderedItemDto> createdOrderItemList;
-    private final String userId;
+    private final Long userId;
 
-    public CreatedOrderDto(List<CreatedOrderedItemDto> createdOrderItemList, String userId) {
+    public CreatedOrderDto(List<CreatedOrderedItemDto> createdOrderItemList, Long userId) {
         this.createdOrderItemList =  Objects.requireNonNull(createdOrderItemList);
         this.userId =  Objects.requireNonNull(userId);
     }

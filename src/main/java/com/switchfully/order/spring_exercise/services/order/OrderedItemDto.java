@@ -10,14 +10,12 @@ import java.time.format.DateTimeFormatter;
 public class OrderedItemDto {
     private final long amountOrdered;
     private final String description;
-    private final String name;
     private final String shippingDate;
     private final BigDecimal totalCostOrderedItems;
 
     public OrderedItemDto(OrderedItem orderedItem) {
         this.amountOrdered = orderedItem.getAmountOrdered();
-        this.name = orderedItem.getName();
-        this.description = orderedItem.getDescription();
+        this.description = orderedItem.getItem().getDescription();
         this.shippingDate = DateTimeFormatter.ISO_DATE.format(orderedItem.getShippingDate());
         this.totalCostOrderedItems = orderedItem.getTotalCostOrderedItems();
     }
