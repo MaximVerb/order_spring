@@ -1,9 +1,11 @@
 package com.switchfully.order.spring_exercise.services.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class AddressInformationDto {
     @JsonProperty("city")
     private final String city;
@@ -16,12 +18,4 @@ public class AddressInformationDto {
 
     @JsonProperty("zip_code")
     private final int zipCode;
-
-    public AddressInformationDto(String city, String street,
-                                 String streetNumber, int zipCode) {
-        this.city = city;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.zipCode = zipCode;
-    }
 }

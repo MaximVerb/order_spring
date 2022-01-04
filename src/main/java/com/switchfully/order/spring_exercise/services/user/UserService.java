@@ -7,5 +7,5 @@ public interface UserService {
 
     List<UserDto> getAllCustomers();
 
-    UserDto getCustomerById(String id);
+    UserDto getCustomerById(Long id);
 }

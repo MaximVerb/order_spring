@@ -55,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
                 .forEach(orderedItem -> {
                     orderedItem.setTotalCostOrderedItems(setTotalCostOrderedItem(orderedItem));
                 });
+
         return orderMapper.convertOrderToOrderDto(orderList);
     }
 
@@ -71,9 +72,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto createOrder(CreatedOrderDto createdOrderDto) {
         List<OrderedItem> orderedItemList = orderMapper.convertDtosToOrderedItems(createOrderedItemList(createdOrderDto.getCreatedOrderItemList()));
-        User user = userRepository.findById(createdOrderDto.getUserId()).orElseThrow(() -> {
-            throw new UserNotFoundException();
-        });
+        User user = userRepository.findById(createdOrderDto.getUserId()).orElseThrow(UserNotFoundException::new);
         Order order = orderMapper.convertOrderDtoToOrder(orderedItemList, user);
         order.setTotalCost(totalCostAllOrders(Stream.of(order)));
         orderedItemRepository.saveAll(orderedItemList);
@@ -84,9 +83,7 @@ public class OrderServiceImpl implements OrderService {
     //TODO hier moet nog een UserId check op gebeuren
     @Override
     public OrderDto createRecurringOrder(String orderId) {
-        Order order = orderRepository.getOrderByOrderId(orderId).orElseThrow(() -> {
-            throw new EntityCouldNotBeFoundExc();
-        });
+        Order order = orderRepository.getOrderByOrderId(orderId).orElseThrow(EntityCouldNotBeFoundExc::new);
 
         Order newOrder = Order.builder()
                 .orderedItems(order.getOrderedItems())
@@ -123,10 +120,7 @@ public class OrderServiceImpl implements OrderService {
         Function<OrderedItem, BigDecimal> orderedItemToItsPrice =
                 orderedItem -> {
                     Optional<Item> optItem = itemRepository.findById(orderedItem.getItem().getId());
-                    if (optItem.isPresent()) {
-                        return optItem.get().getPrice();
-                    }
-                    return new BigDecimal(0);
+                    return optItem.map(Item::getPrice).orElse(new BigDecimal(0));
                 };
 
         return orderedItemList.stream()
@@ -151,7 +145,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private boolean isThereEnoughStock(CreatedOrderedItemDto createdOrderedItem, Item itemInDB) {
-        return itemInDB.getWarehouse().getStockAvailable() > 0 && (itemInDB.getWarehouse().getStockAvailable() - createdOrderedItem.getAmountOrdered()) > 0;
+        return (itemInDB.getWarehouse().getStockAvailable() > 0) &&
+                (itemInDB.getWarehouse().getStockAvailable() - createdOrderedItem.getAmountOrdered()) > 0;
     }
 
     private boolean isCreatedOrderItemGivenAmountValid(List<CreatedOrderedItemDto> createdOrderItemList) {

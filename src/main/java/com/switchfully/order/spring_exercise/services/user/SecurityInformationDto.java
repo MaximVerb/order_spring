@@ -27,6 +27,7 @@ public class SecurityInformationDto {
         return Arrays.stream(UserRole.values())
                 .map(Enum::name)
                 .filter(name -> name.equals(role))
-                .findAny().orElse(UserRole.CUSTOMER.name());
+                .findAny()
+                .orElse(UserRole.CUSTOMER.name());
     }
 }

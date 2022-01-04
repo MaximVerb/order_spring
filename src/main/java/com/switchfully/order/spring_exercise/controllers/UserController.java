@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}")
-    public UserDto getCustomerById(@PathVariable("id") String id) { return userService.getCustomerById(id); }
+    public UserDto getCustomerById(@PathVariable("id") Long id) { return userService.getCustomerById(id); }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

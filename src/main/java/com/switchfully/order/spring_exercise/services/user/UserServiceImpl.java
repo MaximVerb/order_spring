@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getCustomerById(String id) {
+    public UserDto getCustomerById(Long id) {
         return userRepository.findAll()
                 .stream()
                 .filter(user -> user.getSecurityInformation().getUserRole().equals(UserRole.CUSTOMER))
